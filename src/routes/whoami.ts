@@ -17,8 +17,10 @@ export class CS571WhoAmIRoute implements CS571Route {
     }
 
     public addRoute(app: Express): void {
-        app.post(CS571WhoAmIRoute.ROUTE_NAME, (req, res) => {
-
+        app.get(CS571WhoAmIRoute.ROUTE_NAME, this.tokenAgent.authenticateToken, async (req, res) => {
+            res.status(200).send({
+                user: (req as any).user
+            })
         })
     }
 

@@ -7,6 +7,8 @@ import { BadgerUserRegistration } from "../model/badger-user-registration";
 import BadgerUser from "../model/badger-user";
 
 import crypto from 'crypto'
+import BadgerMessageCreation from "../model/badger-message-creation";
+import BadgerMessage from "../model/badger-message";
 
 export class CS571HW6DbConnector {
 
@@ -105,17 +107,49 @@ export class CS571HW6DbConnector {
         await this.sequelize.sync()
     }
 
-    public async findUserIfExists<T>(username: string): Promise<T | undefined> {
+    public async getMessage(id: number): Promise<BadgerMessage | undefined> {
+        const post = await this.badgerUsersTable.findOne({ where: { id } });
+        return post ? new BadgerMessage(post.id, post.poster, post.title, post.content, post.chatroom, post.created) : undefined;
+    }
+
+    public async deleteMessage(id: number): Promise<BadgerMessage | undefined> {
+        const post = await this.badgerUsersTable.findOne({ where: { id } });
+        await this.badgerMessagesTable.destroy({ where: { id } })
+        return post ? new BadgerMessage(post.id, post.poster, post.title, post.content, post.chatroom, post.created) : undefined;
+    }
+
+    public async createMessage(msg: BadgerMessageCreation): Promise<BadgerMessage> {
+        const creation = await this.badgerMessagesTable.create({
+            poster: msg.poster,
+            badger_id: msg.bid,
+            title: msg.title,
+            content: msg.content,
+            chatroom: msg.chatroom,
+            created: new Date()
+        });
+
+        return new BadgerMessage(creation.id, creation.poster, creation.title, creation.content, creation.chatroom, creation.created);
+    }
+
+    public async getMessages(chatroom: string): Promise<BadgerMessage[]> {
+        const tabMsgs = await this.badgerMessagesTable.findAll({
+            limit: 100,
+            where: { chatroom },
+            order: [['created', 'ASC']]
+        });
+        return tabMsgs.map(tabMsg => new BadgerMessage(tabMsg.id, tabMsg.poster, tabMsg.title, tabMsg.content, tabMsg.chatroom, tabMsg.created))
+    }
+
+    public async findUserIfExists(username: string): Promise<any | undefined> {
         const pers = await this.badgerUsersTable.findOne({ where: { username } });
         return pers ?? undefined;
     }
 
     public async createBadgerUser(user: BadgerUserRegistration): Promise<BadgerUser> {
-
         const salt = crypto.randomBytes(16).toString('hex');
-        const hash = crypto.createHmac('sha256', salt).update(user.password).digest('hex');
+        const hash = CS571HW6DbConnector.calculateHash(salt, user.password);
 
-        await this.badgerUsersTable.create({
+        const creation = await this.badgerUsersTable.create({
             username: user.username,
             password: hash,
             badger_id: user.bid,
@@ -123,8 +157,10 @@ export class CS571HW6DbConnector {
             created: new Date()
         });
 
-        const newUser = await this.badgerUsersTable.findOne({ where: { username: user.username } });
+        return new BadgerUser(creation.id, creation.username);
+    }
 
-        return new BadgerUser(newUser.id, newUser.username);
+    public static calculateHash(salt: string, pass: string) {
+        return crypto.createHmac('sha256', salt).update(pass).digest('hex');
     }
 }

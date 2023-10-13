@@ -20,16 +20,37 @@ export class CS571DeleteMessageRoute implements CS571Route {
     }
 
     public addRoute(app: Express): void {
-        app.delete(CS571DeleteMessageRoute.ROUTE_NAME, (req, res) => {
-            const chatroomName = req.params.chatroomName;
+        app.delete(CS571DeleteMessageRoute.ROUTE_NAME, this.tokenAgent.authenticateToken, async (req, res) => {
+            if (req.query.id === undefined || req.query.id === null) {
+                res.status(400).send({
+                    msg: "You must specify a post id to delete."
+                });
+                return;
+            }
 
-            if (!this.chatrooms.includes(chatroomName)) {
+            const id = parseInt((req.query.id || "-1") as string);
+            
+            const msg = await this.connector.getMessage(id);
+
+            if (!msg) {
                 res.status(404).send({
-                    msg: "The specified chatroom does not exist. Chatroom names are case-sensitive."
+                    msg: "That message does not exist!"
                 });
                 return;
             }
             
+            if (msg.poster !== (req as any).user.username) {
+                res.status(401).send({
+                    msg: "You may not delete another user's post!"
+                });
+                return;
+            }
+
+            await this.connector.deleteMessage(id)
+
+            res.status(200).send({
+                msg: "Successfully deleted message!",
+            });
         })
     }
 
