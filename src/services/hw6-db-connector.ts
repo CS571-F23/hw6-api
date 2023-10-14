@@ -63,9 +63,6 @@ export class CS571HW6DbConnector {
                 type: DataTypes.DATE,
                 allowNull: false
             }
-        }, {
-            charset: 'utf8',
-            collate: 'utf8_unicode_ci'
         });
         await this.sequelize.sync()
         this.badgerMessagesTable = await this.sequelize.define("BadgerMessage", {
@@ -100,9 +97,6 @@ export class CS571HW6DbConnector {
                 type: DataTypes.DATE,
                 allowNull: false
             }
-        }, {
-            charset: 'utf8',
-            collate: 'utf8_unicode_ci'
         });
         await this.sequelize.sync()
     }
