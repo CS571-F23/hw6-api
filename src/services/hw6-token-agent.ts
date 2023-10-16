@@ -20,7 +20,6 @@ export class CS571HW6TokenAgent {
     public authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
         const token = await this.validateToken(req.cookies['badgerchat_auth'])
         if (token) {
-            console.log(token);
             (req as any).user = token;
             next();
         } else {
@@ -52,5 +51,9 @@ export class CS571HW6TokenAgent {
 
     public generateToken = (tokenBody: any, exp: number) => {
         return jwt.sign(tokenBody, this.config.SECRET_CONFIG.JWT_SECRET, { expiresIn: `${exp}s` });
+    }
+
+    public getExpFromToken = (token: string) => {
+        return JSON.parse(atob(token.split(".")[1])).exp;
     }
 }

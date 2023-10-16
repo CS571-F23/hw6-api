@@ -57,10 +57,11 @@ export class CS571RegisterRoute implements CS571Route {
             }
 
             const badgerUser = await this.connector.createBadgerUser(new BadgerUserRegistration(username, password, req.header("X-CS571-ID") as string));
+            const cook = this.tokenAgent.generateAccessToken(badgerUser);
 
             res.status(200).cookie(
                 'badgerchat_auth',
-                this.tokenAgent.generateAccessToken(badgerUser),
+                cook,
                 {
                     domain: this.config.PUBLIC_CONFIG.IS_REMOTELY_HOSTED ? 'cs571.org' : undefined,
                     sameSite: this.config.PUBLIC_CONFIG.IS_REMOTELY_HOSTED ? "none" : "lax",
@@ -71,7 +72,8 @@ export class CS571RegisterRoute implements CS571Route {
             ).send(
                 {
                     msg: "Successfully authenticated.",
-                    user: badgerUser
+                    user: badgerUser,
+                    eat: this.tokenAgent.getExpFromToken(cook)
                 }
             );
         })

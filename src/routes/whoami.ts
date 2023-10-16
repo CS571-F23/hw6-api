@@ -17,9 +17,11 @@ export class CS571WhoAmIRoute implements CS571Route {
     }
 
     public addRoute(app: Express): void {
-        app.get(CS571WhoAmIRoute.ROUTE_NAME, this.tokenAgent.authenticateToken, async (req, res) => {
+        app.get(CS571WhoAmIRoute.ROUTE_NAME, async (req, res) => {
+            const user = await this.tokenAgent.validateToken(req.cookies['badgerchat_auth']);
             res.status(200).send({
-                user: (req as any).user
+                isLoggedIn: user ? true : false,
+                user: user
             })
         })
     }

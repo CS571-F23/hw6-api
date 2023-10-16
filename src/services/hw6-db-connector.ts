@@ -102,12 +102,12 @@ export class CS571HW6DbConnector {
     }
 
     public async getMessage(id: number): Promise<BadgerMessage | undefined> {
-        const post = await this.badgerUsersTable.findOne({ where: { id } });
+        const post = await this.badgerMessagesTable.findOne({ where: { id } });
         return post ? new BadgerMessage(post.id, post.poster, post.title, post.content, post.chatroom, post.created) : undefined;
     }
 
     public async deleteMessage(id: number): Promise<BadgerMessage | undefined> {
-        const post = await this.badgerUsersTable.findOne({ where: { id } });
+        const post = await this.badgerMessagesTable.findOne({ where: { id } });
         await this.badgerMessagesTable.destroy({ where: { id } })
         return post ? new BadgerMessage(post.id, post.poster, post.title, post.content, post.chatroom, post.created) : undefined;
     }
@@ -129,7 +129,7 @@ export class CS571HW6DbConnector {
         const tabMsgs = await this.badgerMessagesTable.findAll({
             limit: 100,
             where: { chatroom },
-            order: [['created', 'ASC']]
+            order: [['created', 'DESC']]
         });
         return tabMsgs.map(tabMsg => new BadgerMessage(tabMsg.id, tabMsg.poster, tabMsg.title, tabMsg.content, tabMsg.chatroom, tabMsg.created))
     }

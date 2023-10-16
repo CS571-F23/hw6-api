@@ -11,10 +11,7 @@ export class CS571DeleteMessageRoute implements CS571Route {
     private readonly connector: CS571HW6DbConnector;
     private readonly tokenAgent: CS571HW6TokenAgent;
 
-    private readonly chatrooms: string[];
-
-    public constructor(chatrooms: string[], connector: CS571HW6DbConnector, tokenAgent: CS571HW6TokenAgent) {
-        this.chatrooms = chatrooms;
+    public constructor(connector: CS571HW6DbConnector, tokenAgent: CS571HW6TokenAgent) {
         this.connector = connector;
         this.tokenAgent = tokenAgent;
     }
@@ -28,7 +25,14 @@ export class CS571DeleteMessageRoute implements CS571Route {
                 return;
             }
 
-            const id = parseInt((req.query.id || "-1") as string);
+            let id = parseInt((req.query.id || "A") as string);
+            
+            if(isNaN(id)) {
+                res.status(404).send({
+                    msg: "That message does not exist!"
+                });
+                return;
+            }
             
             const msg = await this.connector.getMessage(id);
 

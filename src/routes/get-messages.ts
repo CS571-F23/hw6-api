@@ -26,7 +26,7 @@ export class CS571GetMessagesRoute implements CS571Route {
                 return;
             }
 
-            if (page < 1 || page > 4) {
+            if (isNaN(page) || page < 1 || page > 4) {
                 res.status(400).send({
                     msg: "A page number must be between 1 and 4."
                 });

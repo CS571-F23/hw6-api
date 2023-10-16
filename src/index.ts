@@ -41,7 +41,7 @@ appBundle.router.addRoutes([
   new CS571AllChatroomsRoute(chatrooms, db),
   new CS571GetMessagesRoute(chatrooms, db),
   new CS571CreateMessageRoute(chatrooms, db, ta),
-  new CS571DeleteMessageRoute(chatrooms, db, ta),
+  new CS571DeleteMessageRoute(db, ta),
   new CS571RegisterRoute(db, ta, appBundle.config),
   new CS571LoginRoute(db, ta, appBundle.config),
   new CS571LogoutRoute(db, appBundle.config),

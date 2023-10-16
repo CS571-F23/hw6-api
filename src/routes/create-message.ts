@@ -40,7 +40,7 @@ export class CS571CreateMessageRoute implements CS571Route {
                 return;
             }
 
-            if (title.length > 128 && content.length > 1024) {
+            if (title.length > 128 || content.length > 1024) {
                 res.status(413).send({
                     msg: "'title' must be 128 characters or fewer and 'content' must be 1024 characters or fewer"
                 })

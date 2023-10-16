@@ -59,9 +59,11 @@ export class CS571LoginRoute implements CS571Route {
                 return;
             }
 
+            const cook = this.tokenAgent.generateAccessToken(new BadgerUser(pers.id, pers.username));
+
             res.status(200).cookie(
                 'badgerchat_auth',
-                this.tokenAgent.generateAccessToken(new BadgerUser(pers.id, pers.username)),
+                cook,
                 {
                     domain: this.config.PUBLIC_CONFIG.IS_REMOTELY_HOSTED ? 'cs571.org' : undefined,
                     sameSite: this.config.PUBLIC_CONFIG.IS_REMOTELY_HOSTED ? "none" : "lax",
@@ -74,7 +76,8 @@ export class CS571LoginRoute implements CS571Route {
                 user: {
                     id: pers.id,
                     username: pers.username
-                }
+                },
+                eat: this.tokenAgent.getExpFromToken(cook)
             })
         })
     }
