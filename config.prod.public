@@ -3,5 +3,6 @@
     "TIMEOUT_WINDOW_LENGTH": 30,
     "TIMEOUT_WINDOW_REQS": 100,
     "IS_REMOTELY_HOSTED": true,
-    "PASSWORDS_LOC": "/cs571/passwords.secret"
+    "PASSWORDS_LOC": "/cs571/passwords.secret",
+    "LOG_IPS": false
 }

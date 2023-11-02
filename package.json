@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cs571/f23-api-middleware": "0.1.29",
+    "@cs571/f23-api-middleware": "0.1.31",
     "@types/cookie-parser": "^1.4.4",
     "@types/jsonwebtoken": "^9.0.3",
     "cookie-parser": "^1.4.6",
