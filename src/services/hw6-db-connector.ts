@@ -44,7 +44,7 @@ export class CS571HW6DbConnector {
                 allowNull: false
             },
             badger_id: {
-                type: DataTypes.STRING(68), // bid_ + 64 chars
+                type: DataTypes.STRING(71), // bid_(fa_)? + 64 chars
                 allowNull: false
             },
             salt: {
@@ -78,7 +78,7 @@ export class CS571HW6DbConnector {
                 allowNull: false
             },
             badger_id: {
-                type: DataTypes.STRING(68), // bid_ + 64 chars
+                type: DataTypes.STRING(71), // bid_(fa_)? + 64 chars
                 allowNull: false
             },
             title: {
